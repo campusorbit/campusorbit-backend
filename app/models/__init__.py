@@ -11,3 +11,11 @@ from app.models.pricing import PricingPlan  # noqa: F401
 from app.models.marketplace import MarketplaceIntegration  # noqa: F401
 from app.models.substitution import SubstitutionRequest  # noqa: F401
 from app.models.complaint import Complaint  # noqa: F401
+from app.models.library import LibraryBook, BookIssue  # noqa: F401
+from app.models.document import Document  # noqa: F401
+from app.models.hr import SalarySlip, LeaveRequest  # noqa: F401
+from app.models.expense import Expense, Budget  # noqa: F401
+from app.models.exam import Exam, ExamResult  # noqa: F401
+from app.models.calendar_event import CalendarEvent  # noqa: F401
+from app.models.store import StoreProduct, StoreOrder  # noqa: F401
+from app.models.vendor import Vendor  # noqa: F401

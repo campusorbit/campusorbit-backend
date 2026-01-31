@@ -57,6 +57,14 @@ from app.api.marketplace import router as marketplace_router
 from app.api.payments import router as payments_router
 from app.api.substitutions import router as substitutions_router
 from app.api.complaints import router as complaints_router
+from app.api.library import router as library_router
+from app.api.documents import router as documents_router
+from app.api.hr import router as hr_router
+from app.api.expenses import router as expenses_router
+from app.api.exams import router as exams_router
+from app.api.calendar import router as calendar_router
+from app.api.store import router as store_router
+from app.api.vendors import router as vendors_router
 
 api_prefix = "/api/v1"
 app.include_router(auth_router, prefix=api_prefix)
@@ -75,6 +83,14 @@ app.include_router(marketplace_router, prefix=api_prefix)
 app.include_router(payments_router, prefix=api_prefix)
 app.include_router(substitutions_router, prefix=api_prefix)
 app.include_router(complaints_router, prefix=api_prefix)
+app.include_router(library_router, prefix=api_prefix)
+app.include_router(documents_router, prefix=api_prefix)
+app.include_router(hr_router, prefix=api_prefix)
+app.include_router(expenses_router, prefix=api_prefix)
+app.include_router(exams_router, prefix=api_prefix)
+app.include_router(calendar_router, prefix=api_prefix)
+app.include_router(store_router, prefix=api_prefix)
+app.include_router(vendors_router, prefix=api_prefix)
 
 
 @app.get("/health")

@@ -29,6 +29,14 @@ class Settings(BaseSettings):
     # Razorpay
     RAZORPAY_PAYMENT_BUTTON_ID: str = ""
 
+    # SMTP (Nodemailer / email notifications)
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASS: str = ""
+    SMTP_FROM_NAME: str = "CampusOrbit Institute"
+    SMTP_FROM_EMAIL: str = ""
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
