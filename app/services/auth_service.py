@@ -3,6 +3,7 @@ import secrets
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import logging
 
 import bcrypt
 from fastapi import Depends, HTTPException, status
@@ -15,6 +16,8 @@ from app.config import settings
 from app.database import get_db
 from app.models.user import User
 import app.redis as redis_module
+
+logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
 
@@ -69,48 +72,79 @@ async def store_reset_token(email: str, token: str, ttl: int = 3600) -> None:
     """Store password reset token in Redis with 1-hour expiry."""
     key = f"reset_token:{token}"
     redis_client = get_redis_client()
-    await redis_client.set(key, email, ex=ttl)
+    try:
+        await redis_client.set(key, email, ex=ttl)
+    except Exception as e:
+        logger.error(f"Failed to store reset token in Redis: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Service temporarily unavailable. Please try again."
+        )
 
 
 async def verify_reset_token(token: str) -> str | None:
     """Verify and retrieve email from reset token."""
     key = f"reset_token:{token}"
     redis_client = get_redis_client()
-    email = await redis_client.get(key)
-    if email:
-        await redis_client.delete(key)  # One-time use
-    return email
+    try:
+        email = await redis_client.get(key)
+        if email:
+            await redis_client.delete(key)  # One-time use
+        return email
+    except Exception as e:
+        logger.error(f"Failed to verify reset token in Redis: {e}")
+        return None
 
 
 async def store_verification_token(user_id: str, token: str, ttl: int = 86400) -> None:
     """Store email verification token in Redis with 24-hour expiry."""
     key = f"verify_token:{token}"
     redis_client = get_redis_client()
-    await redis_client.set(key, user_id, ex=ttl)
+    try:
+        await redis_client.set(key, user_id, ex=ttl)
+    except Exception as e:
+        logger.error(f"Failed to store verification token in Redis: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Service temporarily unavailable. Please try again."
+        )
 
 
 async def verify_verification_token(token: str) -> str | None:
     """Verify and retrieve user_id from verification token."""
     key = f"verify_token:{token}"
     redis_client = get_redis_client()
-    user_id = await redis_client.get(key)
-    if user_id:
-        await redis_client.delete(key)  # One-time use
-    return user_id
+    try:
+        user_id = await redis_client.get(key)
+        if user_id:
+            await redis_client.delete(key)  # One-time use
+        return user_id
+    except Exception as e:
+        logger.error(f"Failed to verify verification token in Redis: {e}")
+        return None
 
 
 async def blacklist_token(token: str, ttl: int = 3600) -> None:
     """Add token to blacklist (for logout)."""
     key = f"blacklist:{token}"
     redis_client = get_redis_client()
-    await redis_client.set(key, "1", ex=ttl)
+    try:
+        await redis_client.set(key, "1", ex=ttl)
+    except Exception as e:
+        logger.warning(f"Failed to blacklist token in Redis: {e}")
+        # Don't raise error for logout - allow it to proceed
 
 
 async def is_token_blacklisted(token: str) -> bool:
     """Check if token is blacklisted."""
     key = f"blacklist:{token}"
     redis_client = get_redis_client()
-    return await redis_client.exists(key) > 0
+    try:
+        return await redis_client.exists(key) > 0
+    except Exception as e:
+        logger.warning(f"Failed to check token blacklist in Redis: {e}")
+        # If Redis is down, allow request to proceed (assume not blacklisted)
+        return False
 
 
 async def send_email(to_email: str, subject: str, body: str) -> bool:

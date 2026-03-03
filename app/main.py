@@ -12,6 +12,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan: startup and shutdown events."""
     # Startup: verify database connection
     from app.database import engine
+    from app.redis import redis_client
     import logging
 
     logger = logging.getLogger(__name__)
@@ -23,12 +24,25 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     except Exception as e:
         logger.warning(f"⚠ Database connection failed: {e}")
         logger.warning("Server will start but database operations will fail")
+    
+    # Test Redis connection
+    try:
+        await redis_client.ping()
+        logger.info("✓ Redis connection successful")
+    except Exception as e:
+        logger.warning(f"⚠ Redis connection failed: {e}")
+        logger.warning("Server will continue but Redis features will be degraded")
 
     yield
 
-    # Shutdown: dispose engine
+    # Shutdown: dispose engine and close Redis
     try:
         await engine.dispose()
+    except Exception:
+        pass
+    
+    try:
+        await redis_client.aclose()
     except Exception:
         pass
 
