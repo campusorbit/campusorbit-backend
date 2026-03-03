@@ -34,7 +34,20 @@ class Settings(BaseSettings):
     INSTITUTE_CODE: str = os.getenv("INSTITUTE_CODE", "COI")
 
     # Razorpay
+    RAZORPAY_KEY_ID: str = os.getenv("RAZORPAY_KEY_ID", "")
+    RAZORPAY_KEY_SECRET: str = os.getenv("RAZORPAY_KEY_SECRET", "")
     RAZORPAY_PAYMENT_BUTTON_ID: str = os.getenv("RAZORPAY_PAYMENT_BUTTON_ID", "")
+
+    # Twilio (WhatsApp)
+    TWILIO_ACCOUNT_SID: str = os.getenv("TWILIO_ACCOUNT_SID", "")
+    TWILIO_AUTH_TOKEN: str = os.getenv("TWILIO_AUTH_TOKEN", "")
+    TWILIO_WHATSAPP_NUMBER: str = os.getenv("TWILIO_WHATSAPP_NUMBER", "")
+
+    # Google Maps
+    GOOGLE_MAPS_API_KEY: str = os.getenv("GOOGLE_MAPS_API_KEY", "")
+
+    # Google Gemini AI
+    GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
 
     # SMTP (Nodemailer / email notifications)
     SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
