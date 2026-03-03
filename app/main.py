@@ -12,14 +12,25 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan: startup and shutdown events."""
     # Startup: verify database connection
     from app.database import engine
+    import logging
 
-    async with engine.begin() as conn:
-        pass  # Connection pool initialized
+    logger = logging.getLogger(__name__)
+    
+    try:
+        async with engine.begin() as conn:
+            pass  # Connection pool initialized
+        logger.info("✓ Database connection successful")
+    except Exception as e:
+        logger.warning(f"⚠ Database connection failed: {e}")
+        logger.warning("Server will start but database operations will fail")
 
     yield
 
     # Shutdown: dispose engine
-    await engine.dispose()
+    try:
+        await engine.dispose()
+    except Exception:
+        pass
 
 
 app = FastAPI(
