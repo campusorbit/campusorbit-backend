@@ -55,6 +55,7 @@ app.add_middleware(
 from app.api.auth import router as auth_router
 from app.api.dashboard import router as dashboard_router
 from app.api.users import router as users_router
+from app.api.students import router as students_router
 from app.api.courses import router as courses_router
 from app.api.fees import router as fees_router
 from app.api.attendance import router as attendance_router
@@ -81,6 +82,7 @@ api_prefix = "/api/v1"
 app.include_router(auth_router, prefix=api_prefix)
 app.include_router(dashboard_router, prefix=api_prefix)
 app.include_router(users_router, prefix=api_prefix)
+app.include_router(students_router, prefix=api_prefix)
 app.include_router(courses_router, prefix=api_prefix)
 app.include_router(fees_router, prefix=api_prefix)
 app.include_router(attendance_router, prefix=api_prefix)

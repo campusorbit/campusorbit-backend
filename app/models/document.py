@@ -19,4 +19,8 @@ class Document(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     access_roles: Mapped[str] = mapped_column(String(255), nullable=False, default="all")  # comma-separated roles
     academic_year: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    entity_type: Mapped[str | None] = mapped_column(String(50), nullable=True)  # student, teacher, course, etc.
+    entity_id: Mapped[str | None] = mapped_column(String(50), nullable=True)  # ID of the related entity
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+

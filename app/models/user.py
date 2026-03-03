@@ -45,3 +45,4 @@ class User(Base):
     attendance_records: Mapped[list["Attendance"]] = relationship(back_populates="student", foreign_keys="Attendance.student_id")  # type: ignore[name-defined]
     notifications: Mapped[list["Notification"]] = relationship(back_populates="user")  # type: ignore[name-defined]
     complaints: Mapped[list["Complaint"]] = relationship(back_populates="user")  # type: ignore[name-defined]
+    profile: Mapped["StudentProfile"] = relationship("StudentProfile", back_populates="student", uselist=False)  # type: ignore[name-defined]
